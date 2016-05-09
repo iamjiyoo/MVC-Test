@@ -9,7 +9,7 @@ import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 
 public class ConnectionPool {
 	private static final int INIT_COUNT = 5;
-	private static final String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
+	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 	
 	private static ArrayList<Connection> freeList = new ArrayList<>();
 	private static ArrayList<Connection> usedList = new ArrayList<>();

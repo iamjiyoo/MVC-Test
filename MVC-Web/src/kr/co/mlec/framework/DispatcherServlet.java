@@ -1,6 +1,9 @@
 package kr.co.mlec.framework;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -55,6 +58,23 @@ public class DispatcherServlet extends HttpServlet {
 			if(control == null) {
 				throw new Exception("요청하신 URL이 올바르지 않습니다");
 			}
+			
+			Object target = control.getTarget();
+			Method method = control.getMethod();
+			
+			ModelAndView mav = (ModelAndView)method.invoke(target, request, response);
+			
+			Map<String, Object> model = mav.getModel();
+			
+			Set<String> keys = model.keySet();
+			
+			for(String key : keys) {
+				request.setAttribute(key, model.get(key));
+			}
+			
+			view = mav.getView();
+			
+			
 		} catch(Exception e) {
 			request.setAttribute("exception", e);
 			view = "/ErrorServlet";

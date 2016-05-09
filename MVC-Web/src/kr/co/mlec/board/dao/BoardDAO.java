@@ -47,7 +47,7 @@ public class BoardDAO {
 			}
 			
 		} catch(Exception e)  {
-			e.printStackTrace();
+			throw e;
 		} finally {
 			if(pstmt != null) {
 				pstmt.close();
@@ -58,5 +58,35 @@ public class BoardDAO {
 		
 		
 		return list;
+	}
+	
+	public int insertBoard(BoardVO board) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int cnt = 0;
+		
+		try {
+			conn = ConnectionPool.getConnection();
+			
+			StringBuilder sql = new StringBuilder();
+			sql.append("insert into board_t(no, title, writer, content) ");
+			sql.append("  values(seq_t_board_no.nextval, ?, ?, ?) ");
+			
+			pstmt = conn.prepareStatement(sql.toString());
+			int index = 1;
+			pstmt.setString(index++, board.getTitle());
+			pstmt.setString(index++, board.getWriter());
+			pstmt.setString(index++,  board.getContent());
+			
+			cnt = pstmt.executeUpdate();
+		} catch(Exception e) {
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				pstmt.close();
+			}
+			ConnectionPool.close(conn);
+		}
+		return cnt;
 	}
 }
